@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/style.css">
-    <title>Webshop</title>
+    <title>{% block title %} Webshop {% endblock %}</title>
 </head>
 <body>
     <header>
@@ -16,17 +16,18 @@
 
     <nav class="navbar">
         <ul class="navbar">
-            <li class="navbar"><a class="navbar" href="/index.html">Főoldal</a></li>
-            <li class="navbar"><a class="navbar" href="/index.html">Akciók</a></li>
-            <li class="navbar"><a class="navbar" href="/index.html">Webáruház</a></li>
-            <li class="navbar"><a class="navbar" href="/index.html">Rólunk</a></li>
-            <li class="navbar"><a class="navbar" href="/reg.html">Regisztráció</a></li> 
+            <li class="navbar"><a class="navbar" href="/">Főoldal</a></li>
+            <li class="navbar"><a class="navbar" href="/">Akciók</a></li>
+            <li class="navbar"><a class="navbar" href="/">Webáruház</a></li>
+            <li class="navbar"><a class="navbar" href="/">Rólunk</a></li>
+            <li class="navbar"><a class="navbar" href="/reg">Regisztráció</a></li>
+            <li class="navbar"><a class="navbar" href="/view">Felhasználók</a></li>
         </ul>
     </nav>
         
     </header>
-
-
+    {% block content%}
+    {% endblock %}
 
 
     
