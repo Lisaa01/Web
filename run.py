@@ -53,7 +53,13 @@ def register():
             flash('User alredy saved!')
             return redirect(url_for('index'))
         return render_template("reg.html")
-# Tesztet tesztelni jó!
+
+@app.route('/logout')
+def logout():
+    flash('You have been logged out', 'info')
+    session.pop('email', None)
+    session.pop('password', None)
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():
