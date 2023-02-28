@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = 'hello'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite3'
+app.config['SQLALCHEMY_BINDS'] = {'books': 'sqlite:///books.sqlite3'}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -23,6 +23,7 @@ class users(db.Model):
 
 
 class books(db.Model):
+    __bind_key__ = 'books'
     _id = db.Column('id', db.Integer, primary_key=True)
     author = db.Column(db.String(100))
     title = db.Column(db.String(100))
@@ -79,6 +80,7 @@ def delete_user():
 @app.route('/delete_book', methods=["GET", "POST"])
 def delete_book():
     if request.method == "POST":
+        session.permanent = True
         author = request.form['author']
         title = request.form['title']
         book = books.query.filter_by(author=author, title=title).first()

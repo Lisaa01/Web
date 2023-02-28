@@ -8,14 +8,14 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
-    <section class="login">
         <form action="#" method="POST">
             <input type="email" name="email" placeholder="E-mail cím" required>
             <input type="password" name="password" placeholder="Jelszó" required>
             <input type="submit" value="submit">
         </form>
-    </section>
-    <form action="{{ url_for('delete_user') }}">
-        <input type="submit" value="delete"/>
-    </form>
+        <form action="{{ url_for('delete_user') }}" method="POST">
+            <input type="email" name="email" placeholder="E-mail cím" required>
+            <input type="password" name="password" placeholder="Jelszó" required>
+            <input type="submit" value="delete"/>
+        </form>
 {% endblock %}
