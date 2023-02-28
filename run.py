@@ -15,7 +15,7 @@ def register():
         users.append({'email': email, 'password': password})
         return render_template("index.html")
     return render_template("reg.html")
-
+# Tesztet tesztelni jó!
 
 if __name__ == '__main__':
     app.run(debug=True)
