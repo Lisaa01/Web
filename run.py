@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = 'hello'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -21,6 +22,16 @@ class users(db.Model):
         self.password = password
 
 
+class books(db.Model):
+    _id = db.Column('id', db.Integer, primary_key=True)
+    author = db.Column(db.String(100))
+    title = db.Column(db.String(100))
+
+    def __init__(self, author, title):
+        self.author = author
+        self.title = title
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -29,29 +40,71 @@ def index():
 def view():
     return render_template('view.html', values=users.query.all())
 
+
+@app.route('/bk_view')
+def bk_view():
+    return render_template("book_view.html", values=books.query.all())
+
+@app.route("/book", methods=["GET", "POST"])
+def book_list():
+    if request.method == "POST":
+        author = request.form['author']
+        title = request.form['title']
+        bk = books(author, title)
+        db.session.add(bk)
+        db.session.commit()
+        flash('Book Saved!')
+        return redirect(url_for('book_list'))
+
+    else:
+        return render_template("books.html")
+
+@app.route('/delete_user', methods=["GET", "POST"])
+def delete_user():
+    if request.method == "POST":
+        session.permanent = True
+        email = request.form['email']
+        password = request.form['password']
+        user = users.query.filter_by(email=email, password=password).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            flash('User deleted!')
+            return redirect(url_for('register'))
+        else:
+            flash('User not found!')
+
+    return render_template("reg.html")
+
+@app.route('/delete_book', methods=["GET", "POST"])
+def delete_book():
+    if request.method == "POST":
+        author = request.form['author']
+        title = request.form['title']
+        book = books.query.filter_by(author=author, title=title).first()
+        if book:
+            db.session.delete(book)
+            db.session.commit()
+            flash('Book deleted!')
+            return redirect(url_for('book_list'))
+        else:
+            flash('Book not found!')
+    
+    return render_template("books.html")
+
 @app.route("/reg", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         session.permanent = True
         email = request.form['email']
-        session['email'] = email
-        found_email = users.query.filter_by(email=email).first()
-
-        if found_email:
-            session['password'] = found_email.password
-
-        else:
-            usr = users(email, '')
-            db.session.add(usr)
-            db.session.commit()
-
+        password = request.form['password']
+        usr = users(email, password)
+        db.session.add(usr)
+        db.session.commit()
         flash('User Saved!')
-        return redirect(url_for('index'))
+        return redirect(url_for('register'))
 
     else:
-        if 'email' in session:
-            flash('User alredy saved!')
-            return redirect(url_for('index'))
         return render_template("reg.html")
 
 @app.route('/logout')
